@@ -109,7 +109,10 @@ export class TabsComponent implements OnInit, OnDestroy {
   add(chosenSymbol: Symbol) {
     const username = this.loggedInUser$?.username;
     this.tabService.addTab(username!, chosenSymbol);
-    this.selected.setValue(this.tabs.length);
+
+    setTimeout(() => {
+      this.selected.setValue(this.tabs.length);
+    }, 99);
   }
 
   removeTab(index: number) {
