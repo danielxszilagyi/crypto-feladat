@@ -1,7 +1,17 @@
 import { Input, Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from '../material.module';
+import {
+  FormGroup,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
+import { MaterialModule } from '../material.module';
+
+import { UserService } from '../services/user.service';
+import { TabService } from '../services/tab.service';
 
 @Component({
   selector: 'my-login-form',
@@ -9,9 +19,9 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, MaterialModule, ReactiveFormsModule],
   template: `
     <mat-card>
-      <mat-card-title>Login</mat-card-title>
+      <mat-card-title class="my-2">Login</mat-card-title>
       <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="submit()">
+        <form [formGroup]="loginForm" (ngSubmit)="submit()">
           <p>
             <mat-form-field>
               <input
@@ -33,13 +43,16 @@ import { CommonModule } from '@angular/common';
               />
             </mat-form-field>
           </p>
-
-          <p *ngIf="error" class="error">
+          @if (error) {
+          <p class="error">
             {{ error }}
           </p>
+          }
 
           <div class="button">
-            <button type="submit" mat-button>Login</button>
+            <button type="submit" [disabled]="loginForm.invalid" mat-button>
+              Login
+            </button>
           </div>
         </form>
       </mat-card-content>
@@ -53,7 +66,7 @@ import { CommonModule } from '@angular/common';
         margin: 100px 0px;
       }
 
-      .mat-form-field {
+      mat-form-field {
         width: 100%;
         min-width: 300px;
       }
@@ -79,17 +92,39 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class LoginFormComponent implements OnInit {
-  form: FormGroup = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl(''),
+  error!: string;
+  loginForm: FormGroup = new FormGroup({
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
   });
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private tabService: TabService
+  ) {}
   ngOnInit() {}
 
   submit() {
-    if (this.form.valid) {
-      this.submitEM.emit(this.form.value);
+    if (this.loginForm.valid) {
+      this.userService
+        .checkUserInDb(
+          this.loginForm.value.username,
+          this.loginForm.value.password
+        )
+        .then((res) => {
+          if (res) {
+            this.tabService.refreshTabs(this.loginForm.value.username);
+            this.router.navigate(['/home']);
+          } else {
+            this.error = 'Wrong password';
+          }
+        });
     }
   }
-  @Input() error?: string | null;
-  @Output() submitEM = new EventEmitter();
 }
