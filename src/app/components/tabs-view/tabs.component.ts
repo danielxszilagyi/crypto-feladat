@@ -1,17 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { MaterialModule } from '../material.module';
+import { MaterialModule } from '../../material.module';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { TabComponent } from '../components/tab.component';
+import { TabComponent } from './tab/tab.component';
 
-import { UserService } from '../services/user.service';
-import { TabService } from '../services/tab.service';
+import { UserService } from '../../services/user.service';
+import { TabService } from '../../services/tab.service';
 
-import { Symbol } from '../models/symbol.model';
-import { User } from '../models/user.model';
+import { Symbol } from '../../models/symbol.model';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-tabs',

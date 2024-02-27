@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { MaterialModule } from './material.module';
 
-import { TabComponent } from './components/tab.component';
+import { TabComponent } from './components/tabs-view/tab/tab.component';
 import { IndexedDbService } from './services/indexedDB.service';
 IndexedDbService;
 

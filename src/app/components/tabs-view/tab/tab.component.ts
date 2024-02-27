@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { MaterialModule } from '../material.module';
+import { MaterialModule } from '../../../material.module';
 import { CommonModule } from '@angular/common';
-import { Symbol } from '../models/symbol.model';
+import { Symbol } from '../../../models/symbol.model';
 
 @Component({
   selector: 'app-tab',
