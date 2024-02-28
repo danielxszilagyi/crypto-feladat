@@ -56,6 +56,9 @@ import { TabService } from '../services/tab.service';
           </div>
         </form>
       </mat-card-content>
+      <button mat-button color="primary" (click)="gyorslogin()">
+        gyorsLogin
+      </button>
     </mat-card>
   `,
   styles: [
@@ -126,5 +129,12 @@ export class LoginFormComponent implements OnInit {
           }
         });
     }
+  }
+
+  gyorslogin() {
+    this.userService.checkUserInDb('test', 'test').then((res) => {
+      this.tabService.refreshTabs('test');
+      this.router.navigate(['/home']);
+    });
   }
 }
