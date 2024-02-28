@@ -26,8 +26,10 @@ import { User } from '../../models/user.model';
       [selectedIndex]="selected.value"
     >
       <mat-tab label="home">
-        <h1>Lets add some tabs</h1>
-        {{ loggedInUser$?.username }}
+        <div class="p-3">
+          <h1>Lets add some tabs</h1>
+          {{ loggedInUser$?.username }}
+        </div>
       </mat-tab>
       @for (tab of tabs; track $index) {
       <mat-tab label="{{ tab }}">
@@ -39,7 +41,9 @@ import { User } from '../../models/user.model';
           >
         </ng-template>
         <!-- content -->
-        <app-tab [data]="tab"></app-tab>
+        <div class="p-3">
+          <app-tab [data]="tab"></app-tab>
+        </div>
       </mat-tab>
       }
 
