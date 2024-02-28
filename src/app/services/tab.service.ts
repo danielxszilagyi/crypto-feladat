@@ -6,6 +6,7 @@ import { Symbol } from '../models/symbol.model';
 import { User } from '../models/user.model';
 
 import { IndexedDbService } from './indexedDB.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -50,12 +51,13 @@ export class TabService implements OnDestroy {
    * @returns Observable
    */
   getSymbols(): Observable<Symbol[]> {
-    const options = {
-      headers: {
-        'X-CoinAPI-Key': 'F5344750-F538-435A-B927-340D1EDE10DD',
-      },
-    };
+    // const options = {
+    //   headers: {
+    //     'X-CoinAPI-Key': 'F5344750-F538-435A-B927-340D1EDE10DD',
+    //   },
+    // };
 
+    const options = environment.options;
     // return this.http
     //   .get<Symbol[]>(
     //     `https://rest.coinapi.io/v1/symbols?filter_symbol_id=BITSTAMP_SPOT_&filter_asset_id=USD`,
