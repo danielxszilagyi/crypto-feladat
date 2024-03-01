@@ -13,7 +13,9 @@ import {
   imports: [CommonModule, MaterialModule, CategoriesComponent],
   template: `
     <div class="sidenav py-4 px-2">
-      <p class="ps-2"><span class="opacity-75">User: </span>{{ username }}</p>
+      <p id="sidenavUsername" class="ps-2" color="primary">
+        <span class="opacity-75">User: </span>{{ username | uppercase }}
+      </p>
       @for (category of categories; track $index) { @if (category) {
       <app-categories [categoryData]="category"></app-categories>
       } }
@@ -22,6 +24,9 @@ import {
   styles: `
   .sidenav p:first-of-type {
     font-size: 1.5rem;
+  }
+  #sidenavUsername{
+    color: #673ab7;
   }
  `,
 })

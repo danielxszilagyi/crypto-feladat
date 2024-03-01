@@ -27,16 +27,30 @@ import { User } from '../../models/user.model';
       [selectedIndex]="selected.value"
     >
       <!-- Home tab -->
+      @if(tabs.length === 0){
+
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon> home </mat-icon>
         </ng-template>
         <mat-divider></mat-divider>
         <div class="p-3">
-          <h1>Lets add some tabs</h1>
-          {{ loggedInUser$?.username }}
+          <div class="row py-5">
+            <div
+              id="homeHello"
+              class="col col-sm-11 col-md-10 col-xl-9 col-xxl-8 mx-auto text-center"
+            >
+              <h1>
+                Hey <span>{{ loggedInUser$?.username | titlecase }}</span
+                >!
+              </h1>
+              <h2 class=" fw-normal mb-5">Lets add some tabs.</h2>
+              <img class="opacity-50" [src]="'./assets/hello.svg'" />
+            </div>
+          </div>
         </div>
       </mat-tab>
+      }
       <!-- Render Tabs -->
       @for (tab of tabs; track $index) {
       <mat-tab class="border-bottom" label="{{ tab }}">
@@ -84,6 +98,17 @@ import { User } from '../../models/user.model';
   `,
   styles: [
     `
+      #homeHello {
+        h1 {
+          font-size: 2.5rem;
+          span {
+            color: #673ab7;
+          }
+        }
+        h2 {
+          font-size: 1.5rem;
+        }
+      }
       .tabCloseIcon {
         cursor: pointer;
         transition: color 0.3s;
@@ -144,7 +169,7 @@ export class TabsComponent implements OnInit, OnDestroy {
     this.tabService.addTab(username!, chosenSymbol);
 
     setTimeout(() => {
-      this.selected.setValue(this.tabs.length);
+      this.selected.setValue(this.tabs.length - 1);
     }, 99);
   }
 
@@ -157,7 +182,7 @@ export class TabsComponent implements OnInit, OnDestroy {
     const username = this.loggedInUser$?.username;
     // this.tabs.splice(index, 1);
     this.tabService.removeTab(username!, index);
-    this.selected.setValue(this.tabs.length);
+    this.selected.setValue(this.tabs.length - 1);
   }
 
   /**
