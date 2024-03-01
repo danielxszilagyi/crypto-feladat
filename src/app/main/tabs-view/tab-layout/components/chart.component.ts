@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { noData } from './chart.data';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CryptoSymbol } from '../../../../models/symbol.model';
@@ -33,6 +40,7 @@ import { Subscription } from 'rxjs';
 })
 export class ChartComponent implements OnInit, OnDestroy {
   @Input() symbolData!: CryptoSymbol;
+  @Output() chartDataEmit = new EventEmitter<any>();
   dataSub!: Subscription;
   chartData: ChartData[] = noData;
   view: any;
@@ -53,17 +61,28 @@ export class ChartComponent implements OnInit, OnDestroy {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5'],
   };
 
+  constructor(private chartService: ChartService) {
+    Object.assign(this, { chartData: this.chartData });
+  }
+
   ngOnInit(): void {
     this.loadChartData();
   }
+
+  private sendDataToParent(data: any): void {
+    this.chartDataEmit.emit(data);
+  }
+
   loadChartData(): void {
     this.dataSub = this.chartService
       .getData(this.symbolData)
       .subscribe((data) => {
         this.chartData = data;
+        this.sendDataToParent(data);
         // console.warn(data);
       });
   }
+
   customXAxisTickFormatting(value: any): string {
     const date = new Date(value);
     const formattedDate = date.toLocaleString('en-US', {
@@ -74,12 +93,9 @@ export class ChartComponent implements OnInit, OnDestroy {
     });
     return formattedDate;
   }
+
   customYAxisTickFormatting(value: any): string {
     return `$${value.toLocaleString('en-US')}`;
-  }
-
-  constructor(private chartService: ChartService) {
-    Object.assign(this, { chartData: this.chartData });
   }
 
   ngOnDestroy(): void {

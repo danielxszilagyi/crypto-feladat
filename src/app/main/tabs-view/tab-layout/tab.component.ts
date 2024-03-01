@@ -1,5 +1,6 @@
 import { TabService } from './../../../services/tab.service';
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { AssetIcon, CryptoSymbol } from '../../../models/symbol.model';
 import { ChartComponent } from './components/chart.component';
 import { PriceCalcComponent } from './components/price-calc.component';
+import { ChartData, ChartSeries } from '../../../models/chart.model';
 
 @Component({
   selector: 'app-tab',
@@ -32,6 +34,9 @@ import { PriceCalcComponent } from './components/price-calc.component';
                   [alt]="data.asset_id_base"
                 />
                 <span class="d-inline ms-2 fs-1">{{ data.asset_id_base }}</span>
+                <span class="d-inline ms-3 fs-4">{{
+                  lastPrice | currency : 'USD' : 'symbol' : '1.0-0'
+                }}</span>
               </div>
               <mat-icon
                 class="pe-2"
@@ -47,10 +52,16 @@ import { PriceCalcComponent } from './components/price-calc.component';
 
           <!-- <h3>asset_id_base: {{ data.asset_id_base }}</h3>
           <h3>symbol_id: {{ data.symbol_id }}</h3> -->
-          <app-chart [symbolData]="data"></app-chart>
+          <app-chart
+            [symbolData]="data"
+            (chartDataEmit)="handleChildData($event)"
+          ></app-chart>
         </div>
       </mat-card>
-      <app-price-calc [symbolData]="data"></app-price-calc>
+      <app-price-calc
+        [symbolData]="data"
+        [lastPrice]="lastPrice"
+      ></app-price-calc>
     </div>
   `,
   styles: `
@@ -78,11 +89,21 @@ export class TabComponent implements OnChanges {
   @Input() data!: CryptoSymbol;
   @Output() favEvent = new EventEmitter<CryptoSymbol>();
   iconData!: AssetIcon | undefined;
-  constructor(private tabService: TabService) {}
+  lastPrice: number = 0;
+  constructor(private tabService: TabService, private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data'] && changes['data'].currentValue) {
       this.iconData = this.tabService.provideIcons(this.data.asset_id_base);
+    }
+  }
+
+  handleChildData(data: ChartData[]) {
+    if (data) {
+      let length = data[0].series.length - 1;
+      this.lastPrice = data[0].series[length].value;
+      this.cdr.detectChanges();
+      // console.log(data[0].series[length].value);
     }
   }
 
