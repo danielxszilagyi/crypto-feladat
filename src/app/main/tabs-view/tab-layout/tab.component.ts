@@ -11,7 +11,7 @@ import { MaterialModule } from '../../../material.module';
 import { CommonModule } from '@angular/common';
 import { AssetIcon, CryptoSymbol } from '../../../models/symbol.model';
 import { ChartComponent } from './components/chart.component';
-import { PriceCalcComponent } from '../../sidenav/components/price-calc.component';
+import { PriceCalcComponent } from './components/price-calc.component';
 
 @Component({
   selector: 'app-tab',

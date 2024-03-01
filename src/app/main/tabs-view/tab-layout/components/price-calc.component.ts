@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { MaterialModule } from '../../../material.module';
-import { ChartData } from '../../../models/chart.model';
+import { MaterialModule } from '../../../../material.module';
+import { ChartData } from '../../../../models/chart.model';
 
 @Component({
   selector: 'app-price-calc',
