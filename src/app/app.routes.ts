@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { LoginFormComponent } from './components/login-form.component';
-import { TabsComponent } from './components/tabs-view/tabs.component';
 import { AuthGuard } from './guards/auth.guard';
+import { MainComponent } from './main/main.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginFormComponent },
-  { path: 'home', component: TabsComponent, canActivate: [AuthGuard] },
+  { path: 'home', component: MainComponent, canActivate: [AuthGuard] },
 ];
