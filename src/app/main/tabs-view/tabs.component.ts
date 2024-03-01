@@ -45,7 +45,10 @@ import { User } from '../../models/user.model';
                 >!
               </h1>
               <h2 class=" fw-normal mb-5">Lets add some tabs.</h2>
-              <img class="opacity-50" [src]="'./assets/hello.svg'" />
+              <img
+                class="opacity-50 pointer-events-none"
+                [src]="'./assets/hello.svg'"
+              />
             </div>
           </div>
         </div>
@@ -123,6 +126,10 @@ import { User } from '../../models/user.model';
         width: 0.9rem;
         height: 0.9rem;
         filter: grayscale(100%);
+      }
+      .pointer-events-none {
+        pointer-events: none;
+        user-select: none;
       }
     `,
   ],
