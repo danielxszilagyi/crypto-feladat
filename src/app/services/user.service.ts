@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { IndexedDbService } from './indexedDB.service';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
+import { CryptoSymbol } from '../models/symbol.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private loggedInUser: BehaviorSubject<User | null> =
+  loggedInUserObj: BehaviorSubject<User | null> =
     new BehaviorSubject<User | null>(null);
   constructor(private db: IndexedDbService) {}
 
@@ -37,7 +38,7 @@ export class UserService {
       .then(async (result: boolean) => {
         if (result === true) {
           const user = this.db.getUserByUsername(username);
-          this.loggedInUser.next(await user);
+          this.loggedInUserObj.next(await user);
           console.log(`User logged in as "${username}"`);
           return true;
         } else {
@@ -58,13 +59,26 @@ export class UserService {
     this.db.addUser(username, password);
   }
 
-  saveTabs(tabs?: Symbol[]): void {
-    const username = this.loggedInUser.getValue()?.username;
+  saveTabs(tabs?: CryptoSymbol[]): void {
+    const username = this.loggedInUserObj.getValue()?.username;
     if (!username) return;
     this.db.saveTabs(username, tabs);
   }
 
+  addFavorite(symbol: CryptoSymbol): void {
+    console.log(`user serv`);
+    const username = this.loggedInUserObj.getValue()?.username;
+    if (!username) return;
+    this.db.addFavorite(username, symbol);
+  }
+
+  removeFavorite(index: number): void {
+    const username = this.loggedInUserObj.getValue()?.username;
+    if (!username) return;
+    // this.db.removeFavorite(username, symbol);
+  }
+
   get loggedInUser$() {
-    return this.loggedInUser.asObservable();
+    return this.loggedInUserObj.asObservable();
   }
 }

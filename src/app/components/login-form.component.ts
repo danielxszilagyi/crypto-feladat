@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { MaterialModule } from '../material.module';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { UserService } from '../services/user.service';
 import { TabService } from '../services/tab.service';
@@ -109,7 +110,8 @@ export class LoginFormComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private tabService: TabService
+    private tabService: TabService,
+    private _snackBar: MatSnackBar
   ) {}
   ngOnInit() {}
 
@@ -122,6 +124,13 @@ export class LoginFormComponent implements OnInit {
         )
         .then((res) => {
           if (res) {
+            this._snackBar.open(
+              `Logged in as ${this.loginForm.value.username}`,
+              'Dismiss',
+              {
+                duration: 1800,
+              }
+            );
             this.tabService.refreshTabs(this.loginForm.value.username);
             this.router.navigate(['/home']);
           } else {
@@ -135,6 +144,9 @@ export class LoginFormComponent implements OnInit {
     this.userService.checkUserInDb('test', 'test').then((res) => {
       this.tabService.refreshTabs('test');
       this.router.navigate(['/home']);
+      this._snackBar.open(`Logged in as test`, 'Dismiss', {
+        duration: 1800,
+      });
     });
   }
 }

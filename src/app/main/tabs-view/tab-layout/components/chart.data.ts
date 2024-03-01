@@ -1,18 +1,10 @@
-export const chartData = [
+export const noData = [
   {
-    name: 'Germany',
+    name: 'No Data Available',
     series: [
       {
         name: '1990',
         value: 56927,
-      },
-      {
-        name: '2010',
-        value: 51843,
-      },
-      {
-        name: '2011',
-        value: 51844,
       },
     ],
   },

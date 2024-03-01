@@ -1,4 +1,4 @@
-export interface Symbol {
+export interface CryptoSymbol {
   asset_id_base: string;
   asset_id_base_exchange?: string;
   asset_id_quote?: string;
@@ -37,4 +37,9 @@ export interface SymbolHistoryData {
   price_close: number;
   volume_traded: number;
   trades_count: number;
+}
+
+export interface AssetIcon {
+  asset_id: string;
+  url: string;
 }

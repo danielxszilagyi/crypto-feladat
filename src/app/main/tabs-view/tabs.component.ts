@@ -1,16 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { MaterialModule } from '../../material.module';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { MaterialModule } from '../../material.module';
 
-import { TabComponent } from './tab/tab.component';
+import { TabComponent } from './tab-layout/tab.component';
 
 import { UserService } from '../../services/user.service';
 import { TabService } from '../../services/tab.service';
+import { FavouritesService } from '../../services/favourites.service';
 
-import { Symbol } from '../../models/symbol.model';
+import { AssetIcon, CryptoSymbol } from '../../models/symbol.model';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -25,25 +26,38 @@ import { User } from '../../models/user.model';
       animationDuration="200ms"
       [selectedIndex]="selected.value"
     >
-      <mat-tab label="home">
+      <!-- Home tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon> home </mat-icon>
+        </ng-template>
+        <mat-divider></mat-divider>
         <div class="p-3">
           <h1>Lets add some tabs</h1>
           {{ loggedInUser$?.username }}
         </div>
       </mat-tab>
+      <!-- Render Tabs -->
       @for (tab of tabs; track $index) {
-      <mat-tab label="{{ tab }}">
+      <mat-tab class="border-bottom" label="{{ tab }}">
         <!-- close btn -->
         <ng-template mat-tab-label>
+          <img
+            [src]="provideIcon(tab.asset_id_base)?.url"
+            class="tabIcon me-1"
+          />
           <span>{{ tab.symbol_id_exchange }}</span>
           <mat-icon class="fs-6 ps-2 tabCloseIcon" (click)="removeTab($index)"
             >close</mat-icon
           >
         </ng-template>
-        <!-- content -->
-        <div class="p-3">
-          <app-tab [data]="tab"></app-tab>
-        </div>
+        <!-- tab content -->
+        <ng-template matTabContent>
+          <mat-divider></mat-divider>
+          <div class="p-4">
+            <app-tab [data]="tab" (favEvent)="handleFav($event)"></app-tab>
+          </div>
+        </ng-template>
       </mat-tab>
       }
 
@@ -80,22 +94,28 @@ import { User } from '../../models/user.model';
           transform: scale(1.1);
         }
       }
+      .tabIcon {
+        width: 0.9rem;
+        height: 0.9rem;
+        filter: grayscale(100%);
+      }
     `,
   ],
 })
 export class TabsComponent implements OnInit, OnDestroy {
-  title = 'crypto-feladat';
   selected = new FormControl(0);
   menuSub!: Subscription;
-  symbolsForMenu: Symbol[] = [];
+  symbolsForMenu: CryptoSymbol[] = [];
   tabSub!: Subscription;
   tabs!: Symbol[] | any;
   loggedInUserSub!: Subscription;
   loggedInUser$!: User | null;
+  iconData!: AssetIcon | undefined;
 
   constructor(
     private userService: UserService,
-    private tabService: TabService
+    private tabService: TabService,
+    private favServ: FavouritesService
   ) {
     this.tabSub = this.tabService.tabs$.subscribe((tabs) => {
       this.tabs = tabs;
@@ -110,7 +130,16 @@ export class TabsComponent implements OnInit, OnDestroy {
     });
   }
 
-  add(chosenSymbol: Symbol) {
+  provideIcon(asset_id_base: string): AssetIcon | undefined {
+    return this.tabService.provideIcons(asset_id_base);
+  }
+
+  /**
+   * Add a new tab to the tab list and update the database.
+   * Set the selected tab to the last one.
+   * @param chosenSymbol
+   */
+  add(chosenSymbol: CryptoSymbol): void {
     const username = this.loggedInUser$?.username;
     this.tabService.addTab(username!, chosenSymbol);
 
@@ -119,11 +148,25 @@ export class TabsComponent implements OnInit, OnDestroy {
     }, 99);
   }
 
-  removeTab(index: number) {
+  /**
+   * Remove tab from the tab list by index and update the database.
+   * Set the selected tab to the last one.
+   * @param index
+   */
+  removeTab(index: number): void {
     const username = this.loggedInUser$?.username;
     // this.tabs.splice(index, 1);
     this.tabService.removeTab(username!, index);
     this.selected.setValue(this.tabs.length);
+  }
+
+  /**
+   * Add symbol to favourites in the database
+   */
+  handleFav(symbol: CryptoSymbol): void {
+    if (!symbol) return;
+    this.favServ.addFav(this.loggedInUser$?.username!, symbol);
+    // this.userService.addFavorite(symbol);
   }
 
   ngOnInit(): void {
@@ -132,6 +175,7 @@ export class TabsComponent implements OnInit, OnDestroy {
       this.loggedInUser$ = user;
     });
   }
+
   ngOnDestroy(): void {
     this.userService.saveTabs(this.tabs);
 

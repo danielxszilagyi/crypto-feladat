@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 
 import { User } from '../models/user.model';
+import { CryptoSymbol } from '../models/symbol.model';
 
 @Injectable({
   providedIn: 'root',
@@ -89,7 +90,7 @@ export class IndexedDbService {
    * @param username
    * @returns User object
    */
-  getUserByUsername(username: string): Promise<User> {
+  async getUserByUsername(username: string): Promise<User> {
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction(['users'], 'readonly');
       const objectStore = transaction.objectStore('users');
@@ -110,7 +111,7 @@ export class IndexedDbService {
    * @param username
    * @param tabs
    */
-  saveTabs(username: string, tabs: Symbol[] | any): void {
+  saveTabs(username: string, tabs: CryptoSymbol[] | any): void {
     const transaction = this.db.transaction(['users'], 'readwrite');
     const objectStore = transaction.objectStore('users');
     const request = objectStore.get(username);
@@ -121,4 +122,40 @@ export class IndexedDbService {
       objectStore.put(user);
     };
   }
+
+  addFavorite(username: string, symbol: CryptoSymbol): void {
+    const transaction = this.db.transaction(['users'], 'readwrite');
+    const objectStore = transaction.objectStore('users');
+    const request = objectStore.get(username);
+
+    request.onsuccess = () => {
+      const user = request.result;
+      user.favourites.push(symbol);
+      objectStore.put(user);
+    };
+  }
+
+  saveFavorite(username: string, favourites: any[] | any): void {
+    const transaction = this.db.transaction(['users'], 'readwrite');
+    const objectStore = transaction.objectStore('users');
+    const request = objectStore.get(username);
+
+    request.onsuccess = () => {
+      const user = request.result;
+      user.favourites = favourites;
+      objectStore.put(user);
+    };
+  }
+
+  // removeFavorite(username: string, symbol: Symbol): void {
+  //   const transaction = this.db.transaction(['users'], 'readwrite');
+  //   const objectStore = transaction.objectStore('users');
+  //   const request = objectStore.get(username);
+
+  //   request.onsuccess = () => {
+  //     const user = request.result;
+  //     user.favourites.splice(index, 1);
+  //     objectStore.put(user);
+  //   };
+  // }
 }
