@@ -71,12 +71,23 @@ export class TabService implements OnDestroy {
   }
 
   /**
-   * Get icons from the dummy icon API and find the icon by asset_id
+   * Get icons from the dummy icon API and find the icon by asset_id.
+   * If the icon is not found, return a default icon.
    * @param assetIdToFind
    * @returns Icon data
    */
-  provideIcons(assetIdToFind: string): AssetIcon | undefined {
-    return dummyIcons.find((icon) => icon.asset_id === assetIdToFind);
+  provideIcons(assetIdToFind: string): AssetIcon {
+    const findResult = dummyIcons.find(
+      (icon) => icon.asset_id === assetIdToFind
+    );
+    if (findResult === undefined) {
+      return {
+        asset_id: '',
+        url: 'https://cdn-icons-png.flaticon.com/512/5172/5172584.png',
+      };
+    } else {
+      return findResult;
+    }
   }
 
   /**
