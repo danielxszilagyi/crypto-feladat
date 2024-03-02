@@ -123,6 +123,11 @@ export class IndexedDbService {
     };
   }
 
+  /**
+   * Add a new tab to the user in DB
+   * @param username
+   * @param symbol
+   */
   addFavorite(username: string, symbol: CryptoSymbol): void {
     const transaction = this.db.transaction(['users'], 'readwrite');
     const objectStore = transaction.objectStore('users');
@@ -135,6 +140,11 @@ export class IndexedDbService {
     };
   }
 
+  /**
+   * Save favourites to user in DB
+   * @param username
+   * @param favourites
+   */
   saveFavorite(username: string, favourites: any[] | any): void {
     const transaction = this.db.transaction(['users'], 'readwrite');
     const objectStore = transaction.objectStore('users');
@@ -146,16 +156,4 @@ export class IndexedDbService {
       objectStore.put(user);
     };
   }
-
-  // removeFavorite(username: string, symbol: Symbol): void {
-  //   const transaction = this.db.transaction(['users'], 'readwrite');
-  //   const objectStore = transaction.objectStore('users');
-  //   const request = objectStore.get(username);
-
-  //   request.onsuccess = () => {
-  //     const user = request.result;
-  //     user.favourites.splice(index, 1);
-  //     objectStore.put(user);
-  //   };
-  // }
 }

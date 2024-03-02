@@ -3,8 +3,10 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
 import { MaterialModule } from '../../../../material.module';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -42,7 +44,7 @@ enum changeIs {
   `,
   styles: ``,
 })
-export class PriceCalcComponent implements OnInit, OnDestroy {
+export class PriceCalcComponent implements OnInit, OnDestroy, OnChanges {
   @Input() symbolData!: CryptoSymbol;
   @Input() lastPrice!: number;
   dollarAmountSub!: Subscription | undefined;
@@ -69,8 +71,16 @@ export class PriceCalcComponent implements OnInit, OnDestroy {
       });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['lastPrice']) {
+      this.exchangeRate = this.lastPrice;
+      this.cdr.detectChanges();
+    }
+  }
+
   ngOnInit(): void {
     this.exchangeRate = this.lastPrice;
+
     this.cdr.detectChanges();
   }
 
@@ -79,8 +89,10 @@ export class PriceCalcComponent implements OnInit, OnDestroy {
    * @param changeIs
    */
   convertCurrency(changeIs: changeIs) {
+    this.cdr.detectChanges();
     const dollarAmount = this.cryptoConverterForm.get('dollarAmount')?.value;
     const cryptoAmount = this.cryptoConverterForm.get('cryptoAmount')?.value;
+    if (!dollarAmount && !cryptoAmount) return;
 
     if (changeIs === 'dollarAmount') {
       this.cryptoConverterForm.patchValue(

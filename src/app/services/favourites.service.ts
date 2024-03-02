@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription, map, of } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { CryptoSymbol } from '../models/symbol.model';
 import { User } from '../models/user.model';
@@ -16,6 +16,10 @@ export class FavouritesService implements OnDestroy {
 
   constructor(private db: IndexedDbService) {}
 
+  /**
+   * Refresh the favourites list
+   * @param username
+   */
   refreshFavs(username: string) {
     this.db.getUserByUsername(username).then((user) => {
       if (user) {
@@ -24,12 +28,22 @@ export class FavouritesService implements OnDestroy {
     });
   }
 
+  /**
+   * Add a new favourite to the list and refresh
+   * @param username
+   * @param newFav
+   */
   addFav(username: string, newFav: CryptoSymbol) {
     if (!username) return;
     this.updateFavs(username, [...this.favourites$.getValue(), newFav]);
     this.refreshFavs(username);
   }
 
+  /**
+   * Remove a favourite from the list and refresh
+   * @param username
+   * @param index
+   */
   removeFav(username: string, index: number) {
     if (!username) return;
     const favs = this.favourites$.getValue();
@@ -39,6 +53,11 @@ export class FavouritesService implements OnDestroy {
     this.refreshFavs(username);
   }
 
+  /**
+   * Update the favourites list in the database
+   * @param username
+   * @param newFavs
+   */
   private updateFavs(username: string, newFavs: CryptoSymbol[]) {
     if (!username) return;
     this.db.saveFavorite(username, newFavs);

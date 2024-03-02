@@ -99,11 +99,10 @@ export class TabComponent implements OnChanges {
   }
 
   handleChildData(data: ChartData[]) {
+    this.cdr.detectChanges();
     if (data) {
       let length = data[0].series.length - 1;
       this.lastPrice = data[0].series[length].value;
-      this.cdr.detectChanges();
-      // console.log(data[0].series[length].value);
     }
   }
 

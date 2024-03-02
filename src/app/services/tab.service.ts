@@ -95,7 +95,7 @@ export class TabService implements OnDestroy {
    * @returns Observable
    */
   getSymbols(): Observable<CryptoSymbol[]> {
-    // !REMOVE THIS
+    // api mock
     return of(dummySymbols) as Observable<CryptoSymbol[]>;
 
     const options = environment.options;

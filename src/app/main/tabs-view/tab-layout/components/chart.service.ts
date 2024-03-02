@@ -27,14 +27,13 @@ export class ChartService {
     const period = '1HRS';
     const limit = '168';
 
+    // return  of(chartData2)
     // get history data of the choosen symbol from API based on period and limit
-    return (
-      of(chartData2)
-        // return this.http
-        //   .get<SymbolHistoryData[]>(
-        //     `${environment.baseUrl}ohlcv/${symbol.symbol_id}/history?period_id=${period}&limit=${limit}`,
-        //     options
-        //   )
+        return this.http
+          .get<SymbolHistoryData[]>(
+            `${environment.baseUrl}ohlcv/${symbol.symbol_id}/history?period_id=${period}&limit=${limit}`,
+            options
+          )
         .pipe(
           map((response: SymbolHistoryData[]) => {
             // construct data for chart from response
@@ -61,10 +60,8 @@ export class ChartService {
                   .reverse(),
               },
             ];
-            // console.log(data);
             return data;
           })
         )
-    );
   }
 }

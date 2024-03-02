@@ -194,7 +194,6 @@ export class TabsComponent implements OnInit, OnDestroy {
    */
   removeTab(index: number): void {
     const username = this.loggedInUser$?.username;
-    // this.tabs.splice(index, 1);
     this.tabService.removeTab(username!, index);
     this.selected.setValue(this.tabs.length - 1);
   }
@@ -205,11 +204,9 @@ export class TabsComponent implements OnInit, OnDestroy {
   handleFav(symbol: CryptoSymbol): void {
     if (!symbol) return;
     this.favServ.addFav(this.loggedInUser$?.username!, symbol);
-    // this.userService.addFavorite(symbol);
   }
 
   ngOnInit(): void {
-    // this.tabService.getTabs();
     this.loggedInUserSub = this.userService.loggedInUser$.subscribe((user) => {
       this.loggedInUser$ = user;
     });
@@ -224,5 +221,3 @@ export class TabsComponent implements OnInit, OnDestroy {
     this.symbolDialogSub.unsubscribe();
   }
 }
-
-// `https://rest.coinapi.io/v1/exchangerate/${'BTC'}/USD?apikey=F5344750-F538-435A-B927-340D1EDE10DD`

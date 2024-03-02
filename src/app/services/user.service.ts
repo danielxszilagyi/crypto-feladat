@@ -32,6 +32,13 @@ export class UserService {
     return loginResult;
   }
 
+  /**
+   * Verifies user's password and logs in the user.
+   * If user is not found, adds user to the database.
+   * @param username
+   * @param password
+   * @returns Promise
+   */
   login(username: string, password: string): Promise<boolean> {
     const result = this.db
       .verifyPassword(username, password)
@@ -59,12 +66,20 @@ export class UserService {
     this.db.addUser(username, password);
   }
 
+  /**
+   * Saves the tabs to the database
+   * @param tabs
+   */
   saveTabs(tabs?: CryptoSymbol[]): void {
     const username = this.loggedInUserObj.getValue()?.username;
     if (!username) return;
     this.db.saveTabs(username, tabs);
   }
 
+  /**
+   * Adds a symbol to the user's favorites in db
+   * @param symbol
+   */
   addFavorite(symbol: CryptoSymbol): void {
     console.log(`user serv`);
     const username = this.loggedInUserObj.getValue()?.username;
@@ -72,6 +87,10 @@ export class UserService {
     this.db.addFavorite(username, symbol);
   }
 
+  /**
+   * Removes a symbol from the user's favorites in db
+   * @param index
+   */
   removeFavorite(index: number): void {
     const username = this.loggedInUserObj.getValue()?.username;
     if (!username) return;

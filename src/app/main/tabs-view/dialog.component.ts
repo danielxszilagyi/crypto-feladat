@@ -1,11 +1,8 @@
 import {
-  ChangeDetectorRef,
   Component,
-  EventEmitter,
   Inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';

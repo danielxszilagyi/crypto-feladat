@@ -69,20 +69,29 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.loadChartData();
   }
 
+  /**
+   * Emit the chart data to the parent component
+   * @param data
+   */
   private sendDataToParent(data: any): void {
     this.chartDataEmit.emit(data);
   }
 
+  /**
+   * Load the chart data from the API
+   */
   loadChartData(): void {
     this.dataSub = this.chartService
       .getData(this.symbolData)
       .subscribe((data) => {
         this.chartData = data;
         this.sendDataToParent(data);
-        // console.warn(data);
       });
   }
 
+  /**
+   * Custom formatting for the x-axis of chart
+   */
   customXAxisTickFormatting(value: any): string {
     const date = new Date(value);
     const formattedDate = date.toLocaleString('en-US', {
@@ -94,6 +103,9 @@ export class ChartComponent implements OnInit, OnDestroy {
     return formattedDate;
   }
 
+  /**
+   * Custom formatting for the y-axis of chart
+   */
   customYAxisTickFormatting(value: any): string {
     return `$${value.toLocaleString('en-US')}`;
   }
