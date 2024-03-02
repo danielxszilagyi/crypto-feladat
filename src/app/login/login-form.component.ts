@@ -57,9 +57,9 @@ import { TabService } from '../services/tab.service';
           </div>
         </form>
       </mat-card-content>
-      <button mat-button color="primary" (click)="gyorslogin()">
+      <!-- <button mat-button color="primary" (click)="gyorslogin()">
         gyorsLogin
-      </button>
+      </button> -->
     </mat-card>
   `,
   styles: [
@@ -115,6 +115,9 @@ export class LoginFormComponent implements OnInit {
   ) {}
   ngOnInit() {}
 
+  /**
+   * Submit the form and check the user in the database and navigate to home if the user exists
+   */
   submit() {
     if (this.loginForm.valid) {
       this.userService
@@ -140,13 +143,13 @@ export class LoginFormComponent implements OnInit {
     }
   }
 
-  gyorslogin() {
-    this.userService.checkUserInDb('test', 'test').then((res) => {
-      this.tabService.refreshTabs('test');
-      this.router.navigate(['/home']);
-      this._snackBar.open(`Logged in as test`, 'Dismiss', {
-        duration: 1800,
-      });
-    });
-  }
+  // gyorslogin() {
+  //   this.userService.checkUserInDb('test', 'test').then((res) => {
+  //     this.tabService.refreshTabs('test');
+  //     this.router.navigate(['/home']);
+  //     this._snackBar.open(`Logged in as test`, 'Dismiss', {
+  //       duration: 1800,
+  //     });
+  //   });
+  // }
 }
