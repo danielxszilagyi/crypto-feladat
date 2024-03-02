@@ -13,11 +13,11 @@ import { FavouritesService } from '../../services/favourites.service';
 
 import { AssetIcon, CryptoSymbol } from '../../models/symbol.model';
 import { User } from '../../models/user.model';
+import { SymbolsDialogService, addTabButton } from './dialog.component';
 
 @Component({
   selector: 'app-tabs',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, MaterialModule, TabComponent],
   template: `
     <mat-tab-group
       dynamicHeight
@@ -81,20 +81,7 @@ import { User } from '../../models/user.model';
       <!-- Add Button-->
       <mat-tab disabled>
         <ng-template mat-tab-label>
-          <button
-            style="pointer-events: all !important"
-            mat-icon-button
-            [matMenuTriggerFor]="menu"
-          >
-            <mat-menu #menu="matMenu">
-              @for (symbol of symbolsForMenu; track $index){
-              <button mat-menu-item (click)="add(symbol)">
-                {{ symbol.asset_id_base }}
-              </button>
-              }
-            </mat-menu>
-            <mat-icon color="primary">add_box</mat-icon>
-          </button>
+          <add-tab-button [symbolsForMenu]="symbolsForMenu"></add-tab-button>
         </ng-template>
       </mat-tab>
     </mat-tab-group>
@@ -133,6 +120,13 @@ import { User } from '../../models/user.model';
       }
     `,
   ],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    MaterialModule,
+    TabComponent,
+    addTabButton,
+  ],
 })
 export class TabsComponent implements OnInit, OnDestroy {
   selected = new FormControl(0);
@@ -143,12 +137,20 @@ export class TabsComponent implements OnInit, OnDestroy {
   loggedInUserSub!: Subscription;
   loggedInUser$!: User | null;
   iconData!: AssetIcon | undefined;
+  selectedSymbol: CryptoSymbol | undefined;
+  symbolDialogSub: Subscription;
 
   constructor(
     private userService: UserService,
     private tabService: TabService,
-    private favServ: FavouritesService
+    private favServ: FavouritesService,
+    private symbolDialogServ: SymbolsDialogService
   ) {
+    this.symbolDialogSub = this.symbolDialogServ
+      .getTabToBeAdded()
+      .subscribe((message: CryptoSymbol) => {
+        this.add(message);
+      });
     this.tabSub = this.tabService.tabs$.subscribe((tabs) => {
       this.tabs = tabs;
     });
@@ -162,6 +164,11 @@ export class TabsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Provide the icon for the tab by asset_id_base
+   * @param asset_id_base
+   * @returns
+   */
   provideIcon(asset_id_base: string): AssetIcon | undefined {
     return this.tabService.provideIcons(asset_id_base);
   }
@@ -214,6 +221,7 @@ export class TabsComponent implements OnInit, OnDestroy {
     this.menuSub.unsubscribe();
     this.tabSub.unsubscribe();
     this.loggedInUserSub.unsubscribe();
+    this.symbolDialogSub.unsubscribe();
   }
 }
 
