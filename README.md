@@ -3,6 +3,8 @@
 ![](https://img.shields.io/badge/Angular-17.0.8-blue)
 ![](https://img.shields.io/badge/Typescript-blue)
 ![](https://img.shields.io/badge/@swimlane-ngx--charts-blue)
+![](https://img.shields.io/badge/@Angular--Material-grey)
+![](https://img.shields.io/badge/Bootstrap-grey)
 
 ####
 
