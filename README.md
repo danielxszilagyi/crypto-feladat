@@ -1,27 +1,66 @@
-# CryptoFeladat
+# Crypto feladat
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8.
+![](https://img.shields.io/badge/Angular-17.0.8-blue)
+![](https://img.shields.io/badge/Typescript-blue)
+![](https://img.shields.io/badge/@swimlane-ngx--charts-blue)
 
-## Development server
+####
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+_Ez a projekt egy előre megadott feladatleírás alapján készült._
 
-## Code scaffolding
+A koncepció egy egyszerű tab-os felépítéssel rendelkezö webapp ami képes megjeleníteni adott kriptovaluták egy hétre visszamenőleges árváltozásait, illetve lehetöséget biztosít egyszerű árfolyamszámítás elvégzésére.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Features
 
-## Build
+- Bejelentkezés és adatok felhasználóhoz rendelése
+- Kedvencek
+- Criptovaluták tabokon való megjelenítése
+- Diagramm elözményadatokkal
+- Árfolyam kalkulátor
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## API Kommunikáció
 
-## Running unit tests
+Az adatok lekérése a [coinAPI](https://docs.coinapi.io/) nyílt szolgáltatásán keresztül került megvalósításra.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+#### Get history
 
-## Running end-to-end tests
+```http
+  GET ohlcv/exchanges/:exchange_id/history
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+| Parameter     | Type     | Description                                                                                                            |
+| :------------ | :------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `exchange_id` | `string` | **Required**. Id of item to fetch                                                                                      |
+| `period_id`   | `string` | **Optional**. Requested timeseries [period](https://docs.coinapi.io/market-data/rest-api/ohlcv/ohlcv-list-all-periods) |
 
-## Further help
+#### Get symbols
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```http
+  GET symbols
+```
+
+| Parameter            | Type     | Description   |
+| :------------------- | :------- | :------------ |
+| `filter_symbol_id`   | `string` | **Optional**. |
+| `filter_exchange_id` | `string` | **Optional**. |
+| `filter_asset_id`    | `string` | **Optional**. |
+
+## Environment Változók
+
+A sikeres API kommunikációhoz elengedhetetlen a szemelyes kulcs megadása. Ezt az enviroment.ts és enviroment.development.ts fájlokban kell megadni.
+
+`X-CoinAPI-Key` : `SZEMELYES-KULCS`
+
+## Elindítás
+
+Sikeres klónozás után az alábbi parancsokkal futtatható lokálisan a projekt.
+
+```bash
+  cd crypto-feladat
+  npm install
+  npm run start
+```
+
+## Készítette
+
+- [@danielxszilagyi](https://www.github.com/danielxszilagyi)
